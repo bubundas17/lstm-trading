@@ -163,10 +163,10 @@ class Dataset:
 
     def ProcessData(self):
         self.df.dropna(inplace=True)
-        self.df = self.add_indicators(self.df)
-        self.df.dropna(inplace=True)
-        self.df = self.pct_change(self.df)
-        self.df.dropna(inplace=True)
+        # self.df = self.add_indicators(self.df)
+        # self.df.dropna(inplace=True)
+        # self.df = self.pct_change(self.df)
+        # self.df.dropna(inplace=True)
         self.df = self.add_predictions(self.df)
         self.df = self.scale_data(self.df)
         # print(self.df.head(200))

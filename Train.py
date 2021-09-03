@@ -26,7 +26,7 @@ model.add(BatchNormalization())
 model.add(Dense(32, activation='relu'))
 model.add(Dropout(0.2))
 
-model.add(Dense(2, activation='softmax'))
+model.add(Dense(2, activation='relu'))
 
 opt = tf.keras.optimizers.Adam(lr=0.001, decay=1e-6)
 
