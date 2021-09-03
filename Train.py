@@ -44,13 +44,13 @@ model.compile(
 
 model.fit(
     ts_generator,
-    epochs=1,
+    epochs=5,
     # validation_data = generator_test,
-    shuffle=False
+    shuffle=True
 )
 
 model.evaluate(generator_test)
-tf.saved_model.save(model, "model")
+model.save("model")
 # model.predict(generator_test)
 
 # ts_generator = TimeseriesGenerator(df_train[[*df_train.columns[:len(df_train.columns)-2]]].values, df_train[[*df_train.columns[-2:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=1)
