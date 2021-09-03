@@ -10,6 +10,7 @@ from AutoTrader import *
 from keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.layers import Dense, Dropout, LSTM, BatchNormalization
 from tensorflow.keras import Sequential
+from sklearn.externals.joblib import dump, load
 
 """
     Binance Dataset Format:
@@ -159,7 +160,8 @@ class Dataset:
                 seq_data.append([list(deq), row[:len(df.columns)-2:].values])
         return seq_data
 
-
+    def save_scaling(self):
+        dump(self.scaler, 'scale/min-max.bin', compress=True)
 
     def ProcessData(self):
         self.df.dropna(inplace=True)

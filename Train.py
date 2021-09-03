@@ -1,17 +1,22 @@
 from  Dataset import *
 
 dataset = Dataset()
+
 train, test = dataset.ProcessData()
+
+dataset.save_scaling()
 
 from keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.layers import Dense, Dropout, LSTM, BatchNormalization
 from tensorflow.keras import Sequential
 import tensorflow as tf
 
-ts_generator = TimeseriesGenerator(train[[*train.columns[:len(train.columns)-2]]].values, train[[*train.columns[-1:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=50)
+ts_generator = TimeseriesGenerator(train[[*train.columns[:len(train.columns)-2]]].values, train[[*train.columns[-1:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=500)
+generator_test = TimeseriesGenerator(test[[*test.columns[:len(test.columns)-2]]].values, test[[*test.columns[-1:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=20)
+
 
 model = Sequential()
-model.add(LSTM(128, input_shape=(360,19), return_sequences=True))
+model.add(LSTM(128, input_shape=(360,len(ts_generator[0][0][0][0])), return_sequences=True))
 model.add(Dropout(0.2))
 model.add(BatchNormalization())  #normalizes activation outputs, same reason you want to normalize your input data.
 
@@ -32,15 +37,21 @@ opt = tf.keras.optimizers.Adam(lr=0.001, decay=1e-6)
 
 # Compile model
 model.compile(
-    loss='categorical_crossentropy',
+    loss='mean_squared_error',
     optimizer=opt,
     metrics=['accuracy']
 )
 
 model.fit(
     ts_generator,
-    epochs=20,
+    epochs=1,
+    # validation_data = generator_test,
+    shuffle=False
 )
+
+model.evaluate(generator_test)
+tf.saved_model.save(model, "model")
+# model.predict(generator_test)
 
 # ts_generator = TimeseriesGenerator(df_train[[*df_train.columns[:len(df_train.columns)-2]]].values, df_train[[*df_train.columns[-2:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=1)
 # print(df_train.head())
