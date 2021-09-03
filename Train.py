@@ -4,7 +4,7 @@ dataset = Dataset()
 
 train, test = dataset.ProcessData()
 
-dataset.save_scaling()
+# dataset.save_scaling()
 
 from keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.layers import Dense, Dropout, LSTM, BatchNormalization
@@ -14,6 +14,7 @@ import tensorflow as tf
 ts_generator = TimeseriesGenerator(train[[*train.columns[:len(train.columns)-2]]].values, train[[*train.columns[-1:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=500)
 generator_test = TimeseriesGenerator(test[[*test.columns[:len(test.columns)-2]]].values, test[[*test.columns[-1:]]].values, length=LOOK_BACK_LEN, sampling_rate=1, batch_size=20)
 
+# print(pd.array(ts_generator[0][0][0]).shape)
 
 model = Sequential()
 model.add(LSTM(128, input_shape=(360,len(ts_generator[0][0][0][0])), return_sequences=True))
@@ -31,7 +32,8 @@ model.add(BatchNormalization())
 model.add(Dense(32, activation='relu'))
 model.add(Dropout(0.2))
 
-model.add(Dense(2, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(4, activation='softmax'))
 
 opt = tf.keras.optimizers.Adam(lr=0.001, decay=1e-6)
 

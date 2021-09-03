@@ -10,7 +10,7 @@ from AutoTrader import *
 from keras.preprocessing.sequence import TimeseriesGenerator
 from tensorflow.keras.layers import Dense, Dropout, LSTM, BatchNormalization
 from tensorflow.keras import Sequential
-from sklearn.externals.joblib import dump, load
+# from sklearn.externals.joblib import dump, load
 
 """
     Binance Dataset Format:
@@ -139,7 +139,7 @@ class Dataset:
 
         for col in df.columns:
             if not ((col == "buy") or (col == "sell") or (col == "DCU_10_15") or (col == "DCU_10_15") or (col == "RSI") or (col == "Volume")):
-                df[f"{col}_pct_change"] = df[col].pct_change()
+                df[f"{col}"] = df[col].pct_change()
 
         # print(df.columns)
         return df  # Ensure buy/sell stays last
@@ -165,10 +165,10 @@ class Dataset:
 
     def ProcessData(self):
         self.df.dropna(inplace=True)
-        # self.df = self.add_indicators(self.df)
+        self.df = self.add_indicators(self.df)
         # self.df.dropna(inplace=True)
         # self.df = self.pct_change(self.df)
-        # self.df.dropna(inplace=True)
+        self.df.dropna(inplace=True)
         self.df = self.add_predictions(self.df)
         self.df = self.scale_data(self.df)
         # print(self.df.head(200))
